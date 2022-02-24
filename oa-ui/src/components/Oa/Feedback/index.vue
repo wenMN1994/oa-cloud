@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'RuoYiDoc',
+  name: 'OaFeedback',
   data() {
     return {
       url: 'http://doc.ruoyi.vip/ruoyi-cloud'

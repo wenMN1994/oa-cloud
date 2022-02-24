@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'RuoYiGit',
+  name: 'OaGit',
   data() {
     return {
       url: 'https://gitee.com/y_project/RuoYi-Cloud'
