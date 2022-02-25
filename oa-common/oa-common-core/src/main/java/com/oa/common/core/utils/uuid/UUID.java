@@ -1,4 +1,4 @@
-package com.oa.common.core.text;
+package com.oa.common.core.utils.uuid;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

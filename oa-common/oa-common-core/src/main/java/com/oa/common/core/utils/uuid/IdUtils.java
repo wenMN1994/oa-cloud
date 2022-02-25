@@ -1,6 +1,4 @@
-package com.oa.common.core.utils;
-
-import com.oa.common.core.text.UUID;
+package com.oa.common.core.utils.uuid;
 
 /**
  * ID生成器工具类

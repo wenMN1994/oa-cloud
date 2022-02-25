@@ -13,7 +13,7 @@ import org.springframework.util.FastByteArrayOutputStream;
 import com.google.code.kaptcha.Producer;
 import com.oa.common.core.constant.Constants;
 import com.oa.common.core.exception.CaptchaException;
-import com.oa.common.core.utils.IdUtils;
+import com.oa.common.core.utils.uuid.IdUtils;
 import com.oa.common.core.utils.StringUtils;
 import com.oa.common.core.utils.sign.Base64;
 import com.oa.common.core.web.domain.AjaxResult;

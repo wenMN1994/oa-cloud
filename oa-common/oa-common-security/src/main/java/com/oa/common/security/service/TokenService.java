@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.oa.common.core.constant.CacheConstants;
 import com.oa.common.core.constant.SecurityConstants;
-import com.oa.common.core.utils.IdUtils;
+import com.oa.common.core.utils.uuid.IdUtils;
 import com.oa.common.core.utils.JwtUtils;
 import com.oa.common.core.utils.ServletUtils;
 import com.oa.common.core.utils.StringUtils;
