@@ -272,6 +272,23 @@ public class VelocityUtils
     {
         List<GenTableColumn> columns = genTable.getColumns();
         Set<String> dicts = new HashSet<String>();
+        addDicts(dicts, columns);
+        if (StringUtils.isNotNull(genTable.getSubTable()))
+        {
+            List<GenTableColumn> subColumns = genTable.getSubTable().getColumns();
+            addDicts(dicts, subColumns);
+        }
+        return StringUtils.join(dicts, ", ");
+    }
+
+    /**
+     * 添加字典列表
+     *
+     * @param dicts 字典列表
+     * @param columns 列集合
+     */
+    public static void addDicts(Set<String> dicts, List<GenTableColumn> columns)
+    {
         for (GenTableColumn column : columns)
         {
             if (!column.isSuperColumn() && StringUtils.isNotEmpty(column.getDictType()) && StringUtils.equalsAny(
@@ -281,7 +298,6 @@ public class VelocityUtils
                 dicts.add("'" + column.getDictType() + "'");
             }
         }
-        return StringUtils.join(dicts, ", ");
     }
 
     /**
