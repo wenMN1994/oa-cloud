@@ -34,8 +34,8 @@ public class SysUser extends BaseEntity
     @Excel(name = "登录名称")
     private String userName;
 
-    /** 用户昵称 */
-    @Excel(name = "用户名称")
+    /** 用户姓名 */
+    @Excel(name = "用户姓名")
     private String nickName;
 
     /** 用户邮箱 */
@@ -55,6 +55,10 @@ public class SysUser extends BaseEntity
 
     /** 密码 */
     private String password;
+
+    /** 员工类型 （0正式 1兼职 2试用）*/
+    @Excel(name = "员工类型", readConverterExp = "0=正式,1=兼职,2=试用")
+    private String type;
 
     /** 帐号状态（0正常 1停用） */
     @Excel(name = "帐号状态", readConverterExp = "0=正常,1=停用")
@@ -209,6 +213,14 @@ public class SysUser extends BaseEntity
         this.password = password;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String getStatus()
     {
         return status;
@@ -310,6 +322,7 @@ public class SysUser extends BaseEntity
             .append("sex", getSex())
             .append("avatar", getAvatar())
             .append("password", getPassword())
+            .append("type", getType())
             .append("status", getStatus())
             .append("delFlag", getDelFlag())
             .append("loginIp", getLoginIp())
