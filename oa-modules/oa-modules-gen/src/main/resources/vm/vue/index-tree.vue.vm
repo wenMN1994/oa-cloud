@@ -1,29 +1,28 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" size="small" inline="true" v-show="showSearch" label-width="68px">
 #foreach($column in $columns)
-#if($column.query)
-#set($dictType=$column.dictType)
-#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
-#set($parentheseIndex=$column.columnComment.indexOf("（"))
-#if($parentheseIndex != -1)
-#set($comment=$column.columnComment.substring(0, $parentheseIndex))
-#else
-#set($comment=$column.columnComment)
-#end
-#if($column.htmlType == "input")
+    #if($column.query)
+        #set($dictType=$column.dictType)
+        #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+        #set($parentheseIndex=$column.columnComment.indexOf("（"))
+        #if($parentheseIndex != -1)
+            #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+        #else
+            #set($comment=$column.columnComment)
+        #end
+        #if($column.htmlType == "input")
       <el-form-item label="${comment}" prop="${column.javaField}">
         <el-input
           v-model="queryParams.${column.javaField}"
           placeholder="请输入${comment}"
           clearable
-          size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
 #elseif(($column.htmlType == "select" || $column.htmlType == "radio") && "" != $dictType)
       <el-form-item label="${comment}" prop="${column.javaField}">
-        <el-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable size="small">
+        <el-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable>
           <el-option
             v-for="dict in dict.type.${dictType}"
             :key="dict.value"
@@ -34,13 +33,13 @@
       </el-form-item>
 #elseif(($column.htmlType == "select" || $column.htmlType == "radio") && $dictType)
       <el-form-item label="${comment}" prop="${column.javaField}">
-        <el-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable size="small">
+        <el-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable>
           <el-option label="请选择字典生成" value="" />
         </el-select>
       </el-form-item>
 #elseif($column.htmlType == "datetime" && $column.queryType != "BETWEEN")
       <el-form-item label="${comment}" prop="${column.javaField}">
-        <el-date-picker clearable size="small"
+        <el-date-picker clearable
           v-model="queryParams.${column.javaField}"
           type="date"
           value-format="yyyy-MM-dd"
@@ -51,7 +50,6 @@
       <el-form-item label="${comment}">
         <el-date-picker
           v-model="daterange${AttrName}"
-          size="small"
           style="width: 240px"
           value-format="yyyy-MM-dd"
           type="daterange"
@@ -61,7 +59,7 @@
         ></el-date-picker>
       </el-form-item>
 #end
-#end
+    #end
 #end
       <el-form-item>
 	    <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -91,15 +89,15 @@
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
 #foreach($column in $columns)
-#set($javaField=$column.javaField)
-#set($parentheseIndex=$column.columnComment.indexOf("（"))
-#if($parentheseIndex != -1)
-#set($comment=$column.columnComment.substring(0, $parentheseIndex))
-#else
-#set($comment=$column.columnComment)
-#end
-#if($column.pk)
-#elseif($column.list && $column.htmlType == "datetime")
+    #set($javaField=$column.javaField)
+    #set($parentheseIndex=$column.columnComment.indexOf("（"))
+    #if($parentheseIndex != -1)
+        #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+    #else
+        #set($comment=$column.columnComment)
+    #end
+    #if($column.pk)
+    #elseif($column.list && $column.htmlType == "datetime")
       <el-table-column label="${comment}" align="center" prop="${javaField}" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.${javaField}, '{y}-{m}-{d}') }}</span>
@@ -122,12 +120,12 @@
         </template>
       </el-table-column>
 #elseif($column.list && "" != $javaField)
-#if(${foreach.index} == 1)
+        #if(${foreach.index} == 1)
       <el-table-column label="${comment}" prop="${javaField}" />
 #else
       <el-table-column label="${comment}" align="center" prop="${javaField}" />
 #end
-#end
+    #end
 #end
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -160,17 +158,17 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
 #foreach($column in $columns)
-#set($field=$column.javaField)
-#if($column.insert && !$column.pk)
-#if(($column.usableColumn) || (!$column.superColumn))
-#set($parentheseIndex=$column.columnComment.indexOf("（"))
-#if($parentheseIndex != -1)
-#set($comment=$column.columnComment.substring(0, $parentheseIndex))
-#else
-#set($comment=$column.columnComment)
-#end
-#set($dictType=$column.dictType)
-#if("" != $treeParentCode && $column.javaField == $treeParentCode)
+    #set($field=$column.javaField)
+    #if($column.insert && !$column.pk)
+        #if(($column.usableColumn) || (!$column.superColumn))
+            #set($parentheseIndex=$column.columnComment.indexOf("（"))
+            #if($parentheseIndex != -1)
+                #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+            #else
+                #set($comment=$column.columnComment)
+            #end
+            #set($dictType=$column.dictType)
+            #if("" != $treeParentCode && $column.javaField == $treeParentCode)
         <el-form-item label="${comment}" prop="${treeParentCode}">
           <treeselect v-model="form.${treeParentCode}" :options="${businessName}Options" :normalizer="normalizer" placeholder="请选择${comment}" />
         </el-form-item>
@@ -244,7 +242,7 @@
         </el-form-item>
 #elseif($column.htmlType == "datetime")
         <el-form-item label="${comment}" prop="${field}">
-          <el-date-picker clearable size="small"
+          <el-date-picker clearable
             v-model="form.${field}"
             type="date"
             value-format="yyyy-MM-dd"
@@ -256,8 +254,8 @@
           <el-input v-model="form.${field}" type="textarea" placeholder="请输入内容" />
         </el-form-item>
 #end
-#end
-#end
+        #end
+    #end
 #end
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -296,8 +294,8 @@ export default {
       // 是否显示弹出层
       open: false,
 #foreach ($column in $columns)
-#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
-#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+    #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+        #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
       // $comment时间范围
       daterange${AttrName}: [],
 #end
@@ -305,9 +303,9 @@ export default {
       // 查询参数
       queryParams: {
 #foreach ($column in $columns)
-#if($column.query)
+    #if($column.query)
         $column.javaField: null#if($foreach.count != $columns.size()),#end
-#end
+    #end
 #end
       },
       // 表单参数
@@ -315,17 +313,17 @@ export default {
       // 表单校验
       rules: {
 #foreach ($column in $columns)
-#if($column.required)
-#set($parentheseIndex=$column.columnComment.indexOf("（"))
-#if($parentheseIndex != -1)
-#set($comment=$column.columnComment.substring(0, $parentheseIndex))
-#else
-#set($comment=$column.columnComment)
-#end
+    #if($column.required)
+        #set($parentheseIndex=$column.columnComment.indexOf("（"))
+        #if($parentheseIndex != -1)
+            #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+        #else
+            #set($comment=$column.columnComment)
+        #end
         $column.javaField: [
           { required: true, message: "$comment不能为空", trigger: #if($column.htmlType == "select")"change"#else"blur"#end }
         ]#if($foreach.count != $columns.size()),#end
-#end
+    #end
 #end
       }
     };
@@ -338,14 +336,14 @@ export default {
     getList() {
       this.loading = true;
 #foreach ($column in $columns)
-#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+    #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
       this.queryParams.params = {};
 #break
-#end
+    #end
 #end
 #foreach ($column in $columns)
-#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
-#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+    #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+        #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
       if (null != this.daterange${AttrName} && '' != this.daterange${AttrName}) {
         this.queryParams.params["begin${AttrName}"] = this.daterange${AttrName}[0];
         this.queryParams.params["end${AttrName}"] = this.daterange${AttrName}[1];
@@ -386,14 +384,14 @@ export default {
     reset() {
       this.form = {
 #foreach ($column in $columns)
-#if($column.htmlType == "radio")
+    #if($column.htmlType == "radio")
         $column.javaField: #if($column.javaType == "Integer" || $column.javaType == "Long")0#else"0"#end#if($foreach.count != $columns.size()),#end
 
-#elseif($column.htmlType == "checkbox")
+    #elseif($column.htmlType == "checkbox")
         $column.javaField: []#if($foreach.count != $columns.size()),#end
-#else
+    #else
         $column.javaField: null#if($foreach.count != $columns.size()),#end
-#end
+    #end
 #end
       };
       this.resetForm("form");
@@ -405,8 +403,8 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
 #foreach ($column in $columns)
-#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
-#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+    #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+        #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
       this.daterange${AttrName} = [];
 #end
 #end
@@ -435,7 +433,7 @@ export default {
       get${BusinessName}(row.${pkColumn.javaField}).then(response => {
         this.form = response.data;
 #foreach ($column in $columns)
-#if($column.htmlType == "checkbox")
+    #if($column.htmlType == "checkbox")
         this.form.$column.javaField = this.form.${column.javaField}.split(",");
 #end
 #end
