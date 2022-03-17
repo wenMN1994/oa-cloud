@@ -56,6 +56,14 @@ public class SysUser extends BaseEntity
     /** 密码 */
     private String password;
 
+    /** 入职时间 */
+    @Excel(name = "入职时间", width = 30, dateFormat = "yyyy-MM-dd", type = Type.EXPORT)
+    private Date hireDate;
+
+    /** 岗位职级 */
+    @Excel(name = "岗位职级")
+    private String postRank;
+
     /** 员工类型 （0正式 1兼职 2试用）*/
     @Excel(name = "员工类型", readConverterExp = "0=正式,1=兼职,2=试用")
     private String type;
@@ -213,6 +221,22 @@ public class SysUser extends BaseEntity
         this.password = password;
     }
 
+    public Date getHireDate() {
+        return hireDate;
+    }
+
+    public void setHireDate(Date hireDate) {
+        this.hireDate = hireDate;
+    }
+
+    public String getPostRank() {
+        return postRank;
+    }
+
+    public void setPostRank(String postRank) {
+        this.postRank = postRank;
+    }
+
     public String getType() {
         return type;
     }
@@ -322,6 +346,8 @@ public class SysUser extends BaseEntity
             .append("sex", getSex())
             .append("avatar", getAvatar())
             .append("password", getPassword())
+            .append("hireDate",getHireDate())
+            .append("postRank",getPostRank())
             .append("type", getType())
             .append("status", getStatus())
             .append("delFlag", getDelFlag())

@@ -250,6 +250,26 @@
         </el-row>
         <el-row>
           <el-col :span="12">
+            <el-form-item label="入职时间" prop="hireDate">
+              <el-date-picker v-model="form.hireDate" format="yyyy-MM-dd" value-format="yyyy-MM-dd"
+                placeholder="请选择入职时间"></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="岗位职级" prop="postRank">
+              <el-select v-model="form.postRank" placeholder="请选择岗位职级">
+                <el-option
+                  v-for="dict in dict.type.sys_user_rank"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
             <el-form-item label="员工类型">
               <el-radio-group v-model="form.type">
                 <el-radio
@@ -362,7 +382,7 @@ import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
 export default {
   name: "User",
-  dicts: ['sys_normal_disable', 'sys_user_sex','sys_user_type'],
+  dicts: ['sys_normal_disable', 'sys_user_sex', 'sys_user_type', 'sys_user_rank'],
   components: { Treeselect },
   data() {
     return {
@@ -430,7 +450,7 @@ export default {
       columns: [
         { key: 0, label: `用户编号`, visible: true },
         { key: 1, label: `用户名称`, visible: true },
-        { key: 2, label: `用户昵称`, visible: true },
+        { key: 2, label: `用户姓名`, visible: true },
         { key: 3, label: `部门`, visible: true },
         { key: 4, label: `手机号码`, visible: true },
         { key: 5, label: `状态`, visible: true },
@@ -443,7 +463,7 @@ export default {
           { min: 2, max: 20, message: '用户名称长度必须介于 2 和 20 之间', trigger: 'blur' }
         ],
         nickName: [
-          { required: true, message: "用户昵称不能为空", trigger: "blur" }
+          { required: true, message: "用户姓名不能为空", trigger: "blur" }
         ],
         password: [
           { required: true, message: "用户密码不能为空", trigger: "blur" },
@@ -533,6 +553,8 @@ export default {
         phonenumber: undefined,
         email: undefined,
         sex: undefined,
+        hireDate: null,
+        postRank: undefined,
         type: "0",
         status: "0",
         remark: undefined,
