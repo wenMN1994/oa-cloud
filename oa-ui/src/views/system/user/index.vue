@@ -329,6 +329,20 @@
         </el-row>
         <el-row>
           <el-col :span="24">
+            <el-form-item label="简历" prop="resumeName">
+              <el-upload ref="resumeUpload" 
+                :file-list="resumefileList" 
+                :action="resumeAction"
+                :headers="headers"
+                :before-upload="resumeBeforeUpload"
+                :on-success="resumeUploadSuccess" accept=".pdf,.doc,.docx" name="file">
+                <el-button size="small" type="primary" icon="el-icon-upload">点击上传</el-button>
+              </el-upload>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
             <el-form-item label="备注">
               <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
             </el-form-item>
@@ -483,7 +497,12 @@ export default {
             trigger: "blur"
           }
         ]
-      }
+      },
+      headers: {
+        Authorization: "Bearer " + getToken(),
+      },
+      resumeAction: process.env.VUE_APP_BASE_API + "/file/upload", // 上传的图片服务器地址
+      resumefileList: [],
     };
   },
   watch: {
@@ -557,10 +576,13 @@ export default {
         postRank: undefined,
         type: "0",
         status: "0",
+        resumeName: undefined,
+        resumeUrl: undefined,
         remark: undefined,
         postIds: [],
         roleIds: []
       };
+      this.$emit('resumeUpload:visible', false)
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -701,7 +723,33 @@ export default {
     // 提交上传文件
     submitFileForm() {
       this.$refs.upload.submit();
-    }
+    },
+    // 简历上传前校验
+    resumeBeforeUpload(file) {
+      let isRightSize = file.size / 1024 / 1024 < 10
+      if (!isRightSize) {
+        this.$message.error('文件大小超过 10MB');
+      }
+      let fileSuffix = file.name.slice(file.name.lastIndexOf("."));
+      let isAccept = (fileSuffix.toLowerCase() == '.pdf' || 
+                      fileSuffix.toLowerCase() == '.doc' || 
+                      fileSuffix.toLowerCase() == '.docx')
+      if (!isAccept) {
+        this.$message.error('应该选择.pdf,.doc,.docx类型的文件')
+      }
+      return isRightSize && isAccept
+    },
+    // 简历上传成功回调
+    resumeUploadSuccess(res) {
+      if(res.code == 200){
+        this.form.resumeName = res.data.name;
+        this.form.resumeUrl = res.data.url;
+        debugger;
+      }else{
+
+      }
+      
+    },
   }
 };
 </script>
