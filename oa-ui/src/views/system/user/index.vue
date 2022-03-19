@@ -203,7 +203,7 @@
     </el-row>
 
     <!-- 添加或修改用户配置对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" @close="onClose" width="800px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
           <el-col :span="12">
@@ -562,6 +562,11 @@ export default {
       this.$refs.resumeUpload.clearFiles();
       this.open = false;
       this.reset();
+    },
+    // 弹出框右上角关闭按钮点击
+    onClose() {
+      debugger;
+      this.cancel();
     },
     // 表单重置
     reset() {
