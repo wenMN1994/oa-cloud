@@ -20,7 +20,7 @@ import com.oa.common.log.enums.BusinessType;
 import com.oa.common.security.service.TokenService;
 import com.oa.common.security.utils.SecurityUtils;
 import com.oa.system.api.RemoteFileService;
-import com.oa.system.api.domain.SysFile;
+import com.oa.system.api.domain.SysFileVo;
 import com.oa.system.api.domain.SysUser;
 import com.oa.system.api.model.LoginUser;
 import com.oa.system.service.ISysUserService;
@@ -131,7 +131,7 @@ public class SysProfileController extends BaseController
         if (!file.isEmpty())
         {
             LoginUser loginUser = SecurityUtils.getLoginUser();
-            R<SysFile> fileResult = remoteFileService.upload(file);
+            R<SysFileVo> fileResult = remoteFileService.upload(file);
             if (StringUtils.isNull(fileResult) || StringUtils.isNull(fileResult.getData()))
             {
                 return AjaxResult.error("文件服务异常，请联系管理员");

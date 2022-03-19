@@ -64,6 +64,16 @@ public class SysUser extends BaseEntity
     @Excel(name = "岗位职级")
     private String postRank;
 
+    /** 简历文件ID */
+    private Long resume;
+
+    /** 简历名称 */
+    private String resumeName;
+
+    /** 简历 url */
+    @Excel(name = "简历url")
+    private String resumeUrl;
+
     /** 员工类型 （0正式 1兼职 2试用）*/
     @Excel(name = "员工类型", readConverterExp = "0=正式,1=兼职,2=试用")
     private String type;
@@ -237,6 +247,30 @@ public class SysUser extends BaseEntity
         this.postRank = postRank;
     }
 
+    public Long getResume() {
+        return resume;
+    }
+
+    public void setResume(Long resume) {
+        this.resume = resume;
+    }
+
+    public String getResumeName() {
+        return resumeName;
+    }
+
+    public void setResumeName(String resumeName) {
+        this.resumeName = resumeName;
+    }
+
+    public String getResumeUrl() {
+        return resumeUrl;
+    }
+
+    public void setResumeUrl(String resumeUrl) {
+        this.resumeUrl = resumeUrl;
+    }
+
     public String getType() {
         return type;
     }
@@ -348,6 +382,9 @@ public class SysUser extends BaseEntity
             .append("password", getPassword())
             .append("hireDate",getHireDate())
             .append("postRank",getPostRank())
+            .append("resume",getResume())
+            .append("resumeName",getResumeName())
+            .append("resumeUrl",getResumeUrl())
             .append("type", getType())
             .append("status", getStatus())
             .append("delFlag", getDelFlag())

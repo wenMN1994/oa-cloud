@@ -1,5 +1,6 @@
 package com.oa.system.api.factory;
 
+import com.oa.common.core.web.domain.AjaxResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FallbackFactory;
@@ -7,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import com.oa.common.core.domain.R;
 import com.oa.system.api.RemoteFileService;
-import com.oa.system.api.domain.SysFile;
+import com.oa.system.api.domain.SysFileVo;
 
 /**
  * 文件服务降级处理
@@ -26,10 +27,16 @@ public class RemoteFileFallbackFactory implements FallbackFactory<RemoteFileServ
         return new RemoteFileService()
         {
             @Override
-            public R<SysFile> upload(MultipartFile file)
+            public R<SysFileVo> upload(MultipartFile file)
             {
                 return R.fail("上传文件失败:" + throwable.getMessage());
             }
+
+            @Override
+            public R<SysFileVo> getInfo(Long id) {
+                return R.fail("获取文件信息失败:" + throwable.getMessage());
+            }
+
         };
     }
 }

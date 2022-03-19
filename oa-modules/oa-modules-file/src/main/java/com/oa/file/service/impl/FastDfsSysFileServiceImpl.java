@@ -1,5 +1,6 @@
-package com.oa.file.service;
+package com.oa.file.service.impl;
 
+import com.oa.file.service.ISysFileUploadService;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +15,7 @@ import com.github.tobato.fastdfs.service.FastFileStorageClient;
  * @author ruoyi
  */
 @Service
-public class FastDfsSysFileServiceImpl implements ISysFileService
+public class FastDfsSysFileServiceImpl implements ISysFileUploadService
 {
     /**
      * 域名或本机访问地址

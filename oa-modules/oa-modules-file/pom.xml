@@ -40,6 +40,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+
+        <!-- Swagger UI -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${swagger.fox.version}</version>
+        </dependency>
 		
         <!-- FastDFS -->
         <dependency>
@@ -53,17 +60,35 @@
             <artifactId>minio</artifactId>
             <version>${minio.version}</version>
         </dependency>
+
+        <!-- Mysql Connector -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
         
         <!-- oa Api System -->
         <dependency>
             <groupId>com.oa</groupId>
             <artifactId>oa-api-system</artifactId>
         </dependency>
+
+        <!-- oa Common Log -->
+        <dependency>
+            <groupId>com.oa</groupId>
+            <artifactId>oa-common-log</artifactId>
+        </dependency>
         
         <!-- oa Common Swagger -->
         <dependency>
             <groupId>com.oa</groupId>
             <artifactId>oa-common-swagger</artifactId>
+        </dependency>
+
+        <!-- oa Common Security-->
+        <dependency>
+            <groupId>com.oa</groupId>
+            <artifactId>oa-common-security</artifactId>
         </dependency>
         
     </dependencies>

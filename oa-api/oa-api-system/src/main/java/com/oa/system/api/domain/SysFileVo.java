@@ -8,8 +8,13 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * 
  * @author ruoyi
  */
-public class SysFile
+public class SysFileVo
 {
+    /**
+     * 文件ID
+     */
+    private Long id;
+
     /**
      * 文件名称
      */
@@ -19,6 +24,14 @@ public class SysFile
      * 文件地址
      */
     private String url;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName()
     {
@@ -43,6 +56,7 @@ public class SysFile
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
+            .append("id", getId())
             .append("name", getName())
             .append("url", getUrl())
             .toString();

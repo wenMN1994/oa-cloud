@@ -16,6 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="password"     column="password"     />
 		<result property="hireDate"     column="hireDate"     />
 		<result property="postRank"     column="postRank"     />
+		<result property="resume"     column="resume"     />
 		<result property="type"         column="type"       />
 		<result property="status"       column="status"       />
 		<result property="delFlag"      column="del_flag"     />
@@ -50,7 +51,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<sql id="selectUserVo">
         select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar, u.phonenumber, u.password, u.sex,
-        u.type, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, u.hireDate, u.postRank,
+        u.type, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, u.hireDate, u.postRank, u.resume,
         d.dept_id, d.parent_id, d.dept_name, d.order_num, d.leader, d.status as dept_status,
         r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.status as role_status
         from sys_user u
@@ -158,6 +159,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="password != null and password != ''">password,</if>
  			<if test="hireDate != null">hireDate,</if>
  			<if test="postRank != null and postRank != ''">postRank,</if>
+ 			<if test="resume != null and resume != 0">resume,</if>
  			<if test="type != null and type != ''">type ,</if>
  			<if test="status != null and status != ''">status,</if>
  			<if test="createBy != null and createBy != ''">create_by,</if>
@@ -175,6 +177,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="password != null and password != ''">#{password},</if>
 			<if test="hireDate != null">#{hireDate},</if>
 			<if test="postRank != null and postRank != ''">#{postRank},</if>
+			<if test="resume != null and resume != 0">#{resume},</if>
 			<if test="type != null and type != ''">#{type} ,</if>
  			<if test="status != null and status != ''">#{status},</if>
  			<if test="createBy != null and createBy != ''">#{createBy},</if>
@@ -196,6 +199,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="password != null and password != ''">password = #{password},</if>
  			<if test="hireDate != null">hireDate = #{hireDate},</if>
  			<if test="postRank != null and postRank != ''">postRank = #{postRank},</if>
+ 			<if test="resume != null and resume != 0">resume = #{resume},</if>
  			<if test="type != null and type != ''">type = #{type},</if>
  			<if test="status != null and status != ''">status = #{status},</if>
  			<if test="loginIp != null and loginIp != ''">login_ip = #{loginIp},</if>

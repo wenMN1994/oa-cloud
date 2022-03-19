@@ -138,7 +138,7 @@
           <el-table-column type="selection" width="50" align="center" />
           <el-table-column label="用户编号" align="center" key="userId" prop="userId" v-if="columns[0].visible" />
           <el-table-column label="用户名称" align="center" key="userName" prop="userName" v-if="columns[1].visible" :show-overflow-tooltip="true" />
-          <el-table-column label="用户昵称" align="center" key="nickName" prop="nickName" v-if="columns[2].visible" :show-overflow-tooltip="true" />
+          <el-table-column label="用户姓名" align="center" key="nickName" prop="nickName" v-if="columns[2].visible" :show-overflow-tooltip="true" />
           <el-table-column label="部门" align="center" key="deptName" prop="dept.deptName" v-if="columns[3].visible" :show-overflow-tooltip="true" />
           <el-table-column label="手机号码" align="center" key="phonenumber" prop="phonenumber" v-if="columns[4].visible" width="120" />
           <el-table-column label="状态" align="center" key="status" v-if="columns[5].visible">
@@ -500,6 +500,7 @@ export default {
       },
       headers: {
         Authorization: "Bearer " + getToken(),
+        fileGroup: "resume",
       },
       resumeAction: process.env.VUE_APP_BASE_API + "/file/upload", // 上传的图片服务器地址
       resumefileList: [],
@@ -558,6 +559,7 @@ export default {
     },
     // 取消按钮
     cancel() {
+      this.$refs.resumeUpload.clearFiles();
       this.open = false;
       this.reset();
     },
@@ -576,13 +578,11 @@ export default {
         postRank: undefined,
         type: "0",
         status: "0",
-        resumeName: undefined,
-        resumeUrl: undefined,
+        resume: undefined,
         remark: undefined,
         postIds: [],
         roleIds: []
       };
-      this.$emit('resumeUpload:visible', false)
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -633,7 +633,11 @@ export default {
       this.getTreeselect();
       const userId = row.userId || this.ids;
       getUser(userId).then(response => {
+        debugger;
         this.form = response.data;
+        if(response.data.resumeName != null && response.data.resumeUrl != null){
+          this.resumefileList = [{ name: response.data.resumeName, url: response.data.resumeUrl }];
+        }
         this.postOptions = response.posts;
         this.roleOptions = response.roles;
         this.form.postIds = response.postIds;
@@ -742,11 +746,11 @@ export default {
     // 简历上传成功回调
     resumeUploadSuccess(res) {
       if(res.code == 200){
-        this.form.resumeName = res.data.name;
-        this.form.resumeUrl = res.data.url;
-        debugger;
+        this.form.resume = res.data.id;
       }else{
-
+        this.resumefileList = [];
+        this.$refs.resumeUpload.clearFiles();
+        this.$modal.msgError("上传简历失败，请重试");
       }
       
     },

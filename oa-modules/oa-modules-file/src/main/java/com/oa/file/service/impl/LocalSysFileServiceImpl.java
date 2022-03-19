@@ -1,5 +1,6 @@
-package com.oa.file.service;
+package com.oa.file.service.impl;
 
+import com.oa.file.service.ISysFileUploadService;
 import com.oa.file.utils.FileUploadUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author ruoyi
  */
 @Service
-public class LocalSysFileServiceImpl implements ISysFileService
+public class LocalSysFileServiceImpl implements ISysFileUploadService
 {
     /**
      * 资源映射路径 前缀

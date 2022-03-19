@@ -1,6 +1,7 @@
-package com.oa.file.service;
+package com.oa.file.service.impl;
 
 import com.oa.file.config.MinioConfig;
+import com.oa.file.service.ISysFileUploadService;
 import com.oa.file.utils.FileUploadUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -16,7 +17,7 @@ import io.minio.PutObjectArgs;
  */
 @Primary
 @Service
-public class MinioSysFileServiceImpl implements ISysFileService
+public class MinioSysFileServiceImpl implements ISysFileUploadService
 {
     @Autowired
     private MinioConfig minioConfig;

@@ -5,6 +5,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
+
+import com.google.common.base.Objects;
+import com.oa.common.core.constant.HttpStatus;
+import com.oa.system.api.RemoteFileService;
+import com.oa.system.api.domain.SysFileVo;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -61,6 +66,9 @@ public class SysUserController extends BaseController
 
     @Autowired
     private ISysConfigService configService;
+
+    @Autowired
+    private RemoteFileService remoteFileService;
 
     /**
      * 获取用户列表
@@ -170,16 +178,23 @@ public class SysUserController extends BaseController
      */
     @RequiresPermissions("system:user:query")
     @GetMapping(value = { "/", "/{userId}" })
-    public AjaxResult getInfo(@PathVariable(value = "userId", required = false) Long userId)
-    {
+    public AjaxResult getInfo(@PathVariable(value = "userId", required = false) Long userId) {
         userService.checkUserDataScope(userId);
         AjaxResult ajax = AjaxResult.success();
         List<SysRole> roles = roleService.selectRoleAll();
         ajax.put("roles", SysUser.isAdmin(userId) ? roles : roles.stream().filter(r -> !r.isAdmin()).collect(Collectors.toList()));
         ajax.put("posts", postService.selectPostAll());
-        if (StringUtils.isNotNull(userId))
-        {
+        if (StringUtils.isNotNull(userId)) {
             SysUser sysUser = userService.selectUserById(userId);
+            // 判断简历ID不为空才进行文件信息数据获取
+            if(StringUtils.isNotNull(sysUser.getResume())){
+                R<SysFileVo> sysFileVo = remoteFileService.getInfo(sysUser.getResume());
+                // 远程调用成功进行简历信息赋值操作
+                if(Objects.equal(HttpStatus.SUCCESS, sysFileVo.getCode())){
+                    sysUser.setResumeName(sysFileVo.getData().getName());
+                    sysUser.setResumeUrl(sysFileVo.getData().getUrl());
+                }
+            }
             ajax.put(AjaxResult.DATA_TAG, sysUser);
             ajax.put("postIds", postService.selectPostListByUserId(userId));
             ajax.put("roleIds", sysUser.getRoles().stream().map(SysRole::getRoleId).collect(Collectors.toList()));
