@@ -12,7 +12,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="email"        column="email"        />
 		<result property="phonenumber"  column="phonenumber"  />
 		<result property="sex"          column="sex"          />
-		<result property="avatar"       column="avatar"       />
+		<result property="avatarId"       column="avatar_id"       />
 		<result property="password"     column="password"     />
 		<result property="hireDate"     column="hire_date"     />
 		<result property="postRank"     column="post_rank"     />
@@ -50,7 +50,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</resultMap>
 	
 	<sql id="selectUserVo">
-        select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar, u.phonenumber, u.password, u.sex,
+        select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar_id, u.phonenumber, u.password, u.sex,
         u.type, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, u.hire_date, u.post_rank, u.resume,
         d.dept_id, d.parent_id, d.dept_name, d.order_num, d.leader, d.status as dept_status,
         r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.status as role_status
@@ -61,7 +61,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
     
     <select id="selectUserList" parameterType="SysUser" resultMap="SysUserResult">
-		select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.password, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from sys_user u
+		select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar_id, u.phonenumber, u.password, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from sys_user u
 		left join sys_dept d on u.dept_id = d.dept_id
 		where u.del_flag = '0'
 		<if test="userId != null and userId != 0">
@@ -153,7 +153,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="userName != null and userName != ''">user_name,</if>
  			<if test="nickName != null and nickName != ''">nick_name,</if>
  			<if test="email != null and email != ''">email,</if>
- 			<if test="avatar != null and avatar != ''">avatar,</if>
+ 			<if test="avatarId != null and avatarId != 0">avatar_id,</if>
  			<if test="phonenumber != null and phonenumber != ''">phonenumber,</if>
  			<if test="sex != null and sex != ''">sex,</if>
  			<if test="password != null and password != ''">password,</if>
@@ -171,7 +171,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="userName != null and userName != ''">#{userName},</if>
  			<if test="nickName != null and nickName != ''">#{nickName},</if>
  			<if test="email != null and email != ''">#{email},</if>
- 			<if test="avatar != null and avatar != ''">#{avatar},</if>
+ 			<if test="avatarId != null and avatarId != 0">#{avatarId},</if>
  			<if test="phonenumber != null and phonenumber != ''">#{phonenumber},</if>
  			<if test="sex != null and sex != ''">#{sex},</if>
  			<if test="password != null and password != ''">#{password},</if>
@@ -195,7 +195,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="email != null ">email = #{email},</if>
  			<if test="phonenumber != null ">phonenumber = #{phonenumber},</if>
  			<if test="sex != null and sex != ''">sex = #{sex},</if>
- 			<if test="avatar != null and avatar != ''">avatar = #{avatar},</if>
+ 			<if test="avatarId != null and avatarId != ''">avatar_id = #{avatarId},</if>
  			<if test="password != null and password != ''">password = #{password},</if>
  			<if test="hireDate != null">hire_date = #{hireDate},</if>
  			<if test="postRank != null and postRank != ''">post_rank = #{postRank},</if>
@@ -216,7 +216,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</update>
 	
 	<update id="updateUserAvatar" parameterType="SysUser">
- 		update sys_user set avatar = #{avatar} where user_name = #{userName}
+ 		update sys_user set avatar_id = #{avatarId} where user_name = #{userName}
 	</update>
 	
 	<update id="resetUserPwd" parameterType="SysUser">

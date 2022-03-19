@@ -1,5 +1,6 @@
 package com.oa.file.controller;
 
+import com.oa.common.core.constant.FileConstants;
 import com.oa.common.core.web.domain.AjaxResult;
 import com.oa.common.security.utils.SecurityUtils;
 import com.oa.file.domain.SysFile;
@@ -13,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.oa.common.core.domain.R;
 import com.oa.common.core.utils.file.FileUtils;
 import com.oa.file.service.ISysFileUploadService;
+
+import java.util.Objects;
 
 /**
  * 文件请求处理
@@ -52,13 +55,17 @@ public class SysFileController
             sysFile.setFileSize(file.getSize());
             // 获取文件名
             String fileName = file.getOriginalFilename();
-            sysFile.setName(fileName);
             // 获取文件后缀
             String fileSuffix = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
+            if(Objects.equals(FileConstants.FILE_GROUP_AVATAR, fileGroup)){
+                fileName = fileName + "_" + SecurityUtils.getUsername();
+                fileSuffix = FileConstants.FILE_GROUP_JPEG;
+            }
+            sysFile.setName(fileName);
+            sysFile.setFileSuffix(fileSuffix);
             // 获取对象存储key
             String key = url.substring(url.lastIndexOf("_") + 1, url.lastIndexOf("."));
             sysFile.setOssKey(key);
-            sysFile.setFileSuffix(fileSuffix);
             // @TODO 后期添加分布式事务保证上传的文件默认是（1）无效，当业务数据保存成功后再设置为（0）有效
             sysFile.setIsEnable("0");
             sysFile.setCreateBy(SecurityUtils.getUsername());

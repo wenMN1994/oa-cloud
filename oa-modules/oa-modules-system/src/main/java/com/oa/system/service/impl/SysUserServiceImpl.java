@@ -5,6 +5,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Validator;
 
+import com.google.common.base.Objects;
+import com.oa.common.core.constant.HttpStatus;
+import com.oa.common.core.domain.R;
+import com.oa.system.api.RemoteFileService;
+import com.oa.system.api.domain.SysFileVo;
 import com.oa.system.service.ISysUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +66,9 @@ public class SysUserServiceImpl implements ISysUserService
 
     @Autowired
     protected Validator validator;
+
+    @Autowired
+    private RemoteFileService remoteFileService;
 
     /**
      * 根据条件分页查询用户列表
@@ -122,7 +130,25 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public SysUser selectUserById(Long userId)
     {
-        return userMapper.selectUserById(userId);
+        SysUser sysUser = userMapper.selectUserById(userId);
+        // 判断简历ID不为空才进行文件信息数据获取
+        if(StringUtils.isNotNull(sysUser.getResume())){
+            R<SysFileVo> sysFileVo = remoteFileService.getInfo(sysUser.getResume());
+            // 远程调用成功进行简历信息赋值操作
+            if(Objects.equal(HttpStatus.SUCCESS, sysFileVo.getCode())){
+                sysUser.setResumeName(sysFileVo.getData().getName());
+                sysUser.setResumeUrl(sysFileVo.getData().getUrl());
+            }
+        }
+        // 判断头像ID不为空才进行文件信息数据获取
+        if(StringUtils.isNotNull(sysUser.getAvatarId())){
+            R<SysFileVo> sysFileVo = remoteFileService.getInfo(sysUser.getAvatarId());
+            // 远程调用成功进行简历信息赋值操作
+            if(Objects.equal(HttpStatus.SUCCESS, sysFileVo.getCode())){
+                sysUser.setAvatar(sysFileVo.getData().getUrl());
+            }
+        }
+        return sysUser;
     }
 
     /**
@@ -341,13 +367,13 @@ public class SysUserServiceImpl implements ISysUserService
      * 修改用户头像
      * 
      * @param userName 用户名
-     * @param avatar 头像地址
+     * @param avatarId 头像ID
      * @return 结果
      */
     @Override
-    public boolean updateUserAvatar(String userName, String avatar)
+    public boolean updateUserAvatar(String userName, Long avatarId)
     {
-        return userMapper.updateUserAvatar(userName, avatar) > 0;
+        return userMapper.updateUserAvatar(userName, avatarId) > 0;
     }
 
     /**

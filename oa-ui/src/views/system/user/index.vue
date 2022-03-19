@@ -565,7 +565,6 @@ export default {
     },
     // 弹出框右上角关闭按钮点击
     onClose() {
-      debugger;
       this.cancel();
     },
     // 表单重置

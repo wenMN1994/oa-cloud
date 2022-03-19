@@ -123,6 +123,15 @@ public class SysUserController extends BaseController
         {
             return R.fail("用户名或密码错误");
         }
+        // 判断简历ID不为空才进行文件信息数据获取
+        if(StringUtils.isNotNull(sysUser.getResume())){
+            R<SysFileVo> fileInfoResult = remoteFileService.getInfo(sysUser.getResume());
+            // 远程调用成功进行头像信息赋值操作
+            if(Objects.equal(HttpStatus.SUCCESS, fileInfoResult.getCode())){
+                sysUser.setAvatar(fileInfoResult.getData().getUrl());
+            }
+        }
+
         // 角色集合
         Set<String> roles = permissionService.getRolePermission(sysUser.getUserId());
         // 权限集合
@@ -186,15 +195,6 @@ public class SysUserController extends BaseController
         ajax.put("posts", postService.selectPostAll());
         if (StringUtils.isNotNull(userId)) {
             SysUser sysUser = userService.selectUserById(userId);
-            // 判断简历ID不为空才进行文件信息数据获取
-            if(StringUtils.isNotNull(sysUser.getResume())){
-                R<SysFileVo> sysFileVo = remoteFileService.getInfo(sysUser.getResume());
-                // 远程调用成功进行简历信息赋值操作
-                if(Objects.equal(HttpStatus.SUCCESS, sysFileVo.getCode())){
-                    sysUser.setResumeName(sysFileVo.getData().getName());
-                    sysUser.setResumeUrl(sysFileVo.getData().getUrl());
-                }
-            }
             ajax.put(AjaxResult.DATA_TAG, sysUser);
             ajax.put("postIds", postService.selectPostListByUserId(userId));
             ajax.put("roleIds", sysUser.getRoles().stream().map(SysRole::getRoleId).collect(Collectors.toList()));

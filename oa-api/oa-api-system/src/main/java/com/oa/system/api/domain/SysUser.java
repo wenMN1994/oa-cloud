@@ -50,8 +50,11 @@ public class SysUser extends BaseEntity
     @Excel(name = "用户性别", readConverterExp = "0=男,1=女,2=未知")
     private String sex;
 
-    /** 用户头像 */
+    /** 用户头像Url */
     private String avatar;
+
+    /** 用户头像Url */
+    private Long avatarId;
 
     /** 密码 */
     private String password;
@@ -210,14 +213,20 @@ public class SysUser extends BaseEntity
         this.sex = sex;
     }
 
-    public String getAvatar()
-    {
+    public String getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(String avatar)
-    {
+    public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public Long getAvatarId() {
+        return avatarId;
+    }
+
+    public void setAvatarId(Long avatarId) {
+        this.avatarId = avatarId;
     }
 
     @JsonProperty
@@ -379,6 +388,7 @@ public class SysUser extends BaseEntity
             .append("phonenumber", getPhonenumber())
             .append("sex", getSex())
             .append("avatar", getAvatar())
+            .append("avatarId", getAvatarId())
             .append("password", getPassword())
             .append("hireDate",getHireDate())
             .append("postRank",getPostRank())

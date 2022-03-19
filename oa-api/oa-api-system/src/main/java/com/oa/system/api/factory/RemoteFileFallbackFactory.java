@@ -27,8 +27,7 @@ public class RemoteFileFallbackFactory implements FallbackFactory<RemoteFileServ
         return new RemoteFileService()
         {
             @Override
-            public R<SysFileVo> upload(MultipartFile file)
-            {
+            public R<SysFileVo> upload(MultipartFile file, String fileGroup) {
                 return R.fail("上传文件失败:" + throwable.getMessage());
             }
 

@@ -5,10 +5,7 @@ import com.oa.system.api.domain.SysFileVo;
 import com.oa.system.api.factory.RemoteFileFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.oa.common.core.constant.ServiceNameConstants;
 import com.oa.common.core.domain.R;
@@ -25,10 +22,11 @@ public interface RemoteFileService
      * 上传文件
      *
      * @param file 文件信息
+     * @param fileGroup 自定义请求头（文件分组）
      * @return 结果
      */
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public R<SysFileVo> upload(@RequestPart(value = "file") MultipartFile file);
+    public R<SysFileVo> upload(@RequestPart(value = "file") MultipartFile file, @RequestHeader("fileGroup") String fileGroup);
 
     /**
      * 获取系统文件详细信息
