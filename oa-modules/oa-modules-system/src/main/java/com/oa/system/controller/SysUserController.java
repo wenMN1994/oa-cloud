@@ -113,8 +113,7 @@ public class SysUserController extends BaseController {
     @GetMapping("/info/{username}")
     public R<LoginUser> info(@PathVariable("username") String username) {
         SysUser sysUser = userService.selectUserByUserName(username);
-        if (StringUtils.isNull(sysUser))
-        {
+        if (StringUtils.isNull(sysUser)) {
             return R.fail("用户名或密码错误");
         }
         // 判断简历ID不为空才进行文件信息数据获取
@@ -144,12 +143,10 @@ public class SysUserController extends BaseController {
     @PostMapping("/register")
     public R<Boolean> register(@RequestBody SysUser sysUser) {
         String username = sysUser.getUserName();
-        if (!("true".equals(configService.selectConfigByKey("sys.account.registerUser"))))
-        {
+        if (!("true".equals(configService.selectConfigByKey("sys.account.registerUser")))) {
             return R.fail("当前系统没有开启注册功能！");
         }
-        if (UserConstants.NOT_UNIQUE.equals(userService.checkUserNameUnique(username)))
-        {
+        if (UserConstants.NOT_UNIQUE.equals(userService.checkUserNameUnique(username))) {
             return R.fail("保存用户'" + username + "'失败，注册账号已存在");
         }
         return R.ok(userService.registerUser(sysUser));
