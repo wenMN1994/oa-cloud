@@ -1,6 +1,5 @@
 package com.oa.system.api.factory;
 
-import com.oa.common.core.web.domain.AjaxResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FallbackFactory;
@@ -34,6 +33,11 @@ public class RemoteFileFallbackFactory implements FallbackFactory<RemoteFileServ
             @Override
             public R<SysFileVo> getInfo(Long id) {
                 return R.fail("获取文件信息失败:" + throwable.getMessage());
+            }
+
+            @Override
+            public R<Boolean> updateFileIsEnable(Long id, String isEnable) {
+                return R.fail("修改文件状态失败:" + throwable.getMessage());
             }
 
         };

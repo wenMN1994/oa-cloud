@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.validation.Validator;
 
 import com.google.common.base.Objects;
+import com.oa.common.core.constant.FileConstants;
 import com.oa.common.core.constant.HttpStatus;
 import com.oa.common.core.domain.R;
 import com.oa.system.api.RemoteFileService;
@@ -288,6 +289,13 @@ public class SysUserServiceImpl implements ISysUserService
         insertUserPost(user);
         // 新增用户与角色管理
         insertUserRole(user);
+        if(rows > 0 && StringUtils.isNotNull(user.getResume())){
+            R<Boolean> enable = remoteFileService.updateFileIsEnable(user.getResume(), FileConstants.FILE_GROUP_ENABLE);
+            if(!Objects.equal(HttpStatus.SUCCESS, enable.getCode())){
+                log.error("新增保存用户信息失败：userId={}，原因：文件服务异常，请联系管理员", user.getUserId());
+                throw new RuntimeException("文件服务异常，请联系管理员");
+            }
+        }
         return rows;
     }
 
@@ -322,7 +330,16 @@ public class SysUserServiceImpl implements ISysUserService
         userPostMapper.deleteUserPostByUserId(userId);
         // 新增用户与岗位管理
         insertUserPost(user);
-        return userMapper.updateUser(user);
+        // 修改用户信息
+        int rows = userMapper.updateUser(user);
+        if(rows > 0 && StringUtils.isNotNull(user.getResume())){
+            R<Boolean> enable = remoteFileService.updateFileIsEnable(user.getResume(), FileConstants.FILE_GROUP_ENABLE);
+            if(!Objects.equal(HttpStatus.SUCCESS, enable.getCode())){
+                log.error("修改保存用户信息失败：userId={}，原因：文件服务异常，请联系管理员", user.getUserId());
+                throw new RuntimeException("文件服务异常，请联系管理员");
+            }
+        }
+        return rows;
     }
 
     /**
@@ -371,9 +388,15 @@ public class SysUserServiceImpl implements ISysUserService
      * @return 结果
      */
     @Override
-    public boolean updateUserAvatar(String userName, Long avatarId)
-    {
-        return userMapper.updateUserAvatar(userName, avatarId) > 0;
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateUserAvatar(String userName, Long avatarId) {
+        userMapper.updateUserAvatar(userName, avatarId);
+        R<Boolean> enable = remoteFileService.updateFileIsEnable(avatarId, FileConstants.FILE_GROUP_ENABLE);
+        if(!Objects.equal(HttpStatus.SUCCESS, enable.getCode())){
+            log.error("修改用户头像失败：userName={}，原因：文件服务异常，请联系管理员", userName);
+            throw new RuntimeException("文件服务异常，请联系管理员");
+        }
+        return true;
     }
 
     /**

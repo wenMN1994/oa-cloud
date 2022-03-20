@@ -1,6 +1,8 @@
 package com.oa.system.controller;
 
 import java.io.IOException;
+
+import com.oa.common.core.constant.FileConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -126,20 +128,16 @@ public class SysProfileController extends BaseController
      */
     @Log(title = "用户头像", businessType = BusinessType.UPDATE)
     @PostMapping("/avatar")
-    public AjaxResult avatar(@RequestParam("avatarfile") MultipartFile file) throws IOException
-    {
-        if (!file.isEmpty())
-        {
+    public AjaxResult avatar(@RequestParam("avatarfile") MultipartFile file) throws IOException {
+        if (!file.isEmpty()) {
             LoginUser loginUser = SecurityUtils.getLoginUser();
             R<SysFileVo> fileResult = remoteFileService.upload(file, "avatar");
-            if (StringUtils.isNull(fileResult) || StringUtils.isNull(fileResult.getData()))
-            {
+            if (StringUtils.isNull(fileResult) || StringUtils.isNull(fileResult.getData())) {
                 return AjaxResult.error("文件服务异常，请联系管理员");
             }
             String url = fileResult.getData().getUrl();
-            Long id = fileResult.getData().getId();
-            if (userService.updateUserAvatar(loginUser.getUsername(), id))
-            {
+            Long fileId = fileResult.getData().getId();
+            if (userService.updateUserAvatar(loginUser.getUsername(), fileId)) {
                 AjaxResult ajax = AjaxResult.success();
                 ajax.put("imgUrl", url);
                 // 更新缓存用户头像

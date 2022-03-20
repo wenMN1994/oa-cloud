@@ -1,6 +1,7 @@
 package com.oa.file.controller;
 
 import com.oa.common.core.constant.FileConstants;
+import com.oa.common.core.utils.StringUtils;
 import com.oa.common.core.web.domain.AjaxResult;
 import com.oa.common.security.utils.SecurityUtils;
 import com.oa.file.domain.SysFile;
@@ -20,11 +21,10 @@ import java.util.Objects;
 /**
  * 文件请求处理
  * 
- * @author ruoyi
+ * @author DragonWen
  */
 @RestController
-public class SysFileController
-{
+public class SysFileController {
     private static final Logger log = LoggerFactory.getLogger(SysFileController.class);
 
     @Autowired
@@ -35,12 +35,13 @@ public class SysFileController
 
     /**
      * 文件上传请求
+     * @param file 文件信息
+     * @param fileGroup 自定义请求头（文件分组标识）
+     * @return
      */
     @PostMapping("upload")
-    public R<SysFileVo> upload(MultipartFile file, @RequestHeader("fileGroup") String fileGroup)
-    {
-        try
-        {
+    public R<SysFileVo> upload(@RequestPart(value = "file")MultipartFile file, @RequestHeader(FileConstants.FILE_GROUP) String fileGroup) {
+        try {
             // 上传并返回访问地址
             String url = sysFileUploadService.uploadFile(file);
             // 返回前端数据实体
@@ -66,15 +67,12 @@ public class SysFileController
             // 获取对象存储key
             String key = url.substring(url.lastIndexOf("_") + 1, url.lastIndexOf("."));
             sysFile.setOssKey(key);
-            // @TODO 后期添加分布式事务保证上传的文件默认是（1）无效，当业务数据保存成功后再设置为（0）有效
-            sysFile.setIsEnable("0");
+            sysFile.setIsEnable(FileConstants.FILE_GROUP_DISABLE);
             sysFile.setCreateBy(SecurityUtils.getUsername());
             sysFileService.insertSysFile(sysFile);
             sysFileVo.setId(sysFile.getId());
             return R.ok(sysFileVo);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error("上传文件失败", e);
             return R.fail(e.getMessage());
         }
@@ -82,21 +80,47 @@ public class SysFileController
 
     /**
      * 获取系统文件详细信息(服务间调用)
+     * @param id 文件ID
+     * @return
      */
     @PostMapping(value = "/getFileInfo")
-    public R<SysFileVo> getInfo(Long id)
-    {
+    public R<SysFileVo> getInfo(@RequestParam(value = "id", required = true) Long id) {
         try {
             SysFile sysFile = sysFileService.selectSysFileById(id);
-            SysFileVo sysFileVo = new SysFileVo();
-            sysFileVo.setId(sysFile.getId());
-            sysFileVo.setName(sysFile.getName());
-            sysFileVo.setUrl(sysFile.getUrl());
-            return R.ok(sysFileVo);
+            if(StringUtils.isNotNull(sysFile)){
+                SysFileVo sysFileVo = new SysFileVo();
+                sysFileVo.setId(sysFile.getId());
+                sysFileVo.setName(sysFile.getName());
+                sysFileVo.setUrl(sysFile.getUrl());
+                return R.ok(sysFileVo);
+            }else {
+                return R.fail("文件不存在：ID="+id);
+            }
         }catch (Exception e) {
             log.error("获取文件ID={}，失败", id, e);
             return R.fail(e.getMessage());
         }
+    }
 
+    /**
+     * 更新系统文件状态isEnable
+     * @param id 文件ID
+     * @param isEnable 状态（0：有效，1无效）
+     * @return
+     */
+    @PostMapping(value = "/updateFileIsEnable")
+    public R<Boolean> updateFileIsEnable(@RequestParam(value = "id", required = true) Long id,
+                                         @RequestParam(value = "isEnable", required = true) String isEnable) {
+        try {
+            SysFile sysFile = new SysFile();
+            sysFile.setId(id);
+            sysFile.setIsEnable(isEnable);
+            sysFile.setUpdateBy(SecurityUtils.getUsername());
+            sysFileService.updateSysFile(sysFile);
+            return R.ok(true);
+        }catch (Exception e) {
+            log.error("更新系统文件状态失败ID={}", id, e);
+            return R.fail(e.getMessage());
+        }
     }
 }
