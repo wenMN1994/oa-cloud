@@ -60,7 +60,7 @@ public class SysUser extends BaseEntity
     private String password;
 
     /** 入职时间 */
-    @Excel(name = "入职时间", width = 30, dateFormat = "yyyy-MM-dd", type = Type.EXPORT)
+    @Excel(name = "入职时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date hireDate;
 
     /** 岗位职级 */
@@ -74,7 +74,7 @@ public class SysUser extends BaseEntity
     private String resumeName;
 
     /** 简历 url */
-    @Excel(name = "简历url")
+    @Excel(name = "简历", type = Type.EXPORT)
     private String resumeUrl;
 
     /** 员工类型 （0正式 1兼职 2试用）*/
