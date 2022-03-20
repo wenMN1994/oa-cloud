@@ -281,7 +281,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="员工状态">
+            <el-form-item label="账号状态">
               <el-radio-group v-model="form.status">
                 <el-radio
                   v-for="dict in dict.type.sys_normal_disable"

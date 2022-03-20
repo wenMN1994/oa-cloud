@@ -81,7 +81,19 @@ public class SysUserServiceImpl implements ISysUserService
     @DataScope(deptAlias = "d", userAlias = "u")
     public List<SysUser> selectUserList(SysUser user)
     {
-        return userMapper.selectUserList(user);
+        List<SysUser> userList = userMapper.selectUserList(user);
+        userList.forEach(sysUser -> {
+            Long resume = sysUser.getResume();
+            if(StringUtils.isNotNull(resume)){
+                R<SysFileVo> fileInfo = remoteFileService.getInfo(resume);
+                if(Objects.equal(HttpStatus.SUCCESS, fileInfo.getCode())){
+                    sysUser.setResumeUrl(fileInfo.getData().getUrl());
+                } else {
+                    log.error("文件服务异常；获取文件ID={}失败", resume);
+                }
+            }
+        });
+        return userList;
     }
 
     /**
