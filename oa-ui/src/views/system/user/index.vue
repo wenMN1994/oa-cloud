@@ -637,7 +637,6 @@ export default {
       this.getTreeselect();
       const userId = row.userId || this.ids;
       getUser(userId).then(response => {
-        debugger;
         this.form = response.data;
         if(response.data.resumeName != null && response.data.resumeUrl != null){
           this.resumefileList = [{ name: response.data.resumeName, url: response.data.resumeUrl }];
