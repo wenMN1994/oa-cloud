@@ -2,11 +2,11 @@ package com.oa.system.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.base.Objects;
 import com.oa.common.core.constant.HttpStatus;
 import com.oa.system.api.RemoteFileService;
 import com.oa.system.api.domain.SysFileVo;
@@ -120,7 +120,7 @@ public class SysUserController extends BaseController {
         if(StringUtils.isNotNull(sysUser.getResume())){
             R<SysFileVo> fileInfoResult = remoteFileService.getInfo(sysUser.getResume());
             // 远程调用成功进行头像信息赋值操作
-            if(Objects.equal(HttpStatus.SUCCESS, fileInfoResult.getCode())){
+            if(Objects.equals(R.SUCCESS, fileInfoResult.getCode())){
                 sysUser.setAvatar(fileInfoResult.getData().getUrl());
             }
         }

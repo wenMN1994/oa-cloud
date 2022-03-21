@@ -1,8 +1,8 @@
 package com.oa.system.controller;
 
 import java.io.IOException;
+import java.util.Objects;
 
-import com.oa.common.core.constant.FileConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -99,21 +99,17 @@ public class SysProfileController extends BaseController
      */
     @Log(title = "个人信息", businessType = BusinessType.UPDATE)
     @PutMapping("/updatePwd")
-    public AjaxResult updatePwd(String oldPassword, String newPassword)
-    {
+    public AjaxResult updatePwd(String oldPassword, String newPassword) {
         String username = SecurityUtils.getUsername();
         SysUser user = userService.selectUserByUserName(username);
         String password = user.getPassword();
-        if (!SecurityUtils.matchesPassword(oldPassword, password))
-        {
+        if (!SecurityUtils.matchesPassword(oldPassword, password)) {
             return AjaxResult.error("修改密码失败，旧密码错误");
         }
-        if (SecurityUtils.matchesPassword(newPassword, password))
-        {
+        if (SecurityUtils.matchesPassword(newPassword, password)) {
             return AjaxResult.error("新密码不能与旧密码相同");
         }
-        if (userService.resetUserPwd(username, SecurityUtils.encryptPassword(newPassword)) > 0)
-        {
+        if (userService.resetUserPwd(username, SecurityUtils.encryptPassword(newPassword)) > 0) {
             // 更新缓存用户密码
             LoginUser loginUser = SecurityUtils.getLoginUser();
             loginUser.getSysUser().setPassword(SecurityUtils.encryptPassword(newPassword));
@@ -132,7 +128,7 @@ public class SysProfileController extends BaseController
         if (!file.isEmpty()) {
             LoginUser loginUser = SecurityUtils.getLoginUser();
             R<SysFileVo> fileResult = remoteFileService.upload(file, "avatar");
-            if (StringUtils.isNull(fileResult) || StringUtils.isNull(fileResult.getData())) {
+            if(Objects.equals(R.FAIL, fileResult.getCode())){
                 return AjaxResult.error("文件服务异常，请联系管理员");
             }
             String url = fileResult.getData().getUrl();
