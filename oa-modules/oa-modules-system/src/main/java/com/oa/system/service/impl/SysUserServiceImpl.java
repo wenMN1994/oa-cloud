@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import javax.validation.Validator;
 
 import com.oa.common.core.constant.FileConstants;
-import com.oa.common.core.constant.HttpStatus;
 import com.oa.common.core.domain.R;
 import com.oa.system.api.RemoteFileService;
 import com.oa.system.api.domain.SysFileVo;
