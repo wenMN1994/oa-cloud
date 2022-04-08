@@ -316,10 +316,12 @@ export default {
       this.multiple = !selection.length;
     },
     /** 修改按钮操作 */
-    handleEditTable(row) {
-      const tableId = row.tableId || this.ids[0];
-      this.$router.push({ path: '/tool/gen-edit/index/' + tableId, query: { pageNum: this.queryParams.pageNum } });
-    },
+        handleEditTable(row) {
+          const tableId = row.tableId || this.ids[0];
+          const tableName = row.tableName || this.tableNames[0];
+          const params = { pageNum: this.queryParams.pageNum };
+          this.$tab.openPage("修改[" + tableName + "]生成配置", '/tool/gen-edit/index/' + tableId, params);
+        },
     /** 删除按钮操作 */
     handleDelete(row) {
       const tableIds = row.tableId || this.ids;
