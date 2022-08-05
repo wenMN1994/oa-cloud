@@ -11,7 +11,7 @@ import com.oa.system.api.domain.SysDictData;
 /**
  * 字典工具类
  * 
- * @author ruoyi
+ * @author dragon
  */
 public class DictUtils
 {
@@ -34,10 +34,10 @@ public class DictUtils
      */
     public static List<SysDictData> getDictCache(String key)
     {
-        Object cacheObj = SpringUtils.getBean(RedisService.class).getCacheObject(getCacheKey(key));
-        if (StringUtils.isNotNull(cacheObj))
+        JSONArray arrayCache = SpringUtils.getBean(RedisService.class).getCacheObject(getCacheKey(key));
+        if (StringUtils.isNotNull(arrayCache))
         {
-            return StringUtils.cast(cacheObj);
+            return arrayCache.toList(SysDictData.class);
         }
         return null;
     }

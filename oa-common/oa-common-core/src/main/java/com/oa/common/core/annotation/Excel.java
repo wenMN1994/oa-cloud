@@ -5,14 +5,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.math.BigDecimal;
-import com.oa.common.core.utils.poi.ExcelHandlerAdapter;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
+import com.oa.common.core.utils.poi.ExcelHandlerAdapter;
 
 /**
  * 自定义导出Excel数据注解
- * 
- * @author ruoyi
+ *
+ * @author dragon
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
@@ -104,7 +104,22 @@ public @interface Excel
     public ColumnType cellType() default ColumnType.STRING;
 
     /**
-     * 导出字体颜色
+     * 导出列头背景色
+     */
+    public IndexedColors headerBackgroundColor() default IndexedColors.GREY_50_PERCENT;
+
+    /**
+     * 导出列头字体颜色
+     */
+    public IndexedColors headerColor() default IndexedColors.WHITE;
+
+    /**
+     * 导出单元格背景色
+     */
+    public IndexedColors backgroundColor() default IndexedColors.WHITE;
+
+    /**
+     * 导出单元格字体颜色
      */
     public IndexedColors color() default IndexedColors.BLACK;
 

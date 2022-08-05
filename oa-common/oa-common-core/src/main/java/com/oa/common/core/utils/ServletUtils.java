@@ -5,12 +5,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Enumeration;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.alibaba.fastjson2.JSON;
 import com.oa.common.core.domain.R;
 import com.oa.common.core.text.Convert;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -18,10 +18,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.util.LinkedCaseInsensitiveMap;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import com.alibaba.fastjson.JSONObject;
 import com.oa.common.core.constant.Constants;
 import reactor.core.publisher.Mono;
 
@@ -143,7 +143,7 @@ public class ServletUtils
 
     public static Map<String, String> getHeaders(HttpServletRequest request)
     {
-        Map<String, String> map = new LinkedHashMap<>();
+        Map<String, String> map = new LinkedCaseInsensitiveMap<>();
         Enumeration<String> enumeration = request.getHeaderNames();
         if (enumeration != null)
         {
@@ -297,7 +297,7 @@ public class ServletUtils
         response.setStatusCode(status);
         response.getHeaders().add(HttpHeaders.CONTENT_TYPE, contentType);
         R<?> result = R.fail(code, value.toString());
-        DataBuffer dataBuffer = response.bufferFactory().wrap(JSONObject.toJSONString(result).getBytes());
+        DataBuffer dataBuffer = response.bufferFactory().wrap(JSON.toJSONString(result).getBytes());
         return response.writeWith(Mono.just(dataBuffer));
     }
 }

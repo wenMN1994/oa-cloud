@@ -21,6 +21,7 @@
             :filter-node-method="filterNode"
             ref="tree"
             default-expand-all
+            highlight-current
             @node-click="handleNodeClick"
           />
         </div>
@@ -330,8 +331,8 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="简历" prop="resumeName">
-              <el-upload ref="resumeUpload" 
-                :file-list="resumefileList" 
+              <el-upload ref="resumeUpload"
+                :file-list="resumefileList"
                 :action="resumeAction"
                 :headers="headers"
                 :before-upload="resumeBeforeUpload"
@@ -738,8 +739,8 @@ export default {
         this.$message.error('文件大小超过 10MB');
       }
       let fileSuffix = file.name.slice(file.name.lastIndexOf("."));
-      let isAccept = (fileSuffix.toLowerCase() == '.pdf' || 
-                      fileSuffix.toLowerCase() == '.doc' || 
+      let isAccept = (fileSuffix.toLowerCase() == '.pdf' ||
+                      fileSuffix.toLowerCase() == '.doc' ||
                       fileSuffix.toLowerCase() == '.docx')
       if (!isAccept) {
         this.$message.error('应该选择.pdf,.doc,.docx类型的文件')
@@ -755,7 +756,7 @@ export default {
         this.$refs.resumeUpload.clearFiles();
         this.$modal.msgError("上传简历失败，请重试");
       }
-      
+
     },
   }
 };

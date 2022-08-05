@@ -10,8 +10,8 @@ import DictOptions from './DictOptions'
  */
 export default class DictMeta {
   constructor(options) {
-    this.type = options.type,
-    this.request = options.request,
+    this.type = options.type
+    this.request = options.request
     this.responseConverter = options.responseConverter
     this.labelField = options.labelField
     this.valueField = options.valueField

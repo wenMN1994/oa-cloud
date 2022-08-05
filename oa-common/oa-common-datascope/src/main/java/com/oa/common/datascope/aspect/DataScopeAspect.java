@@ -1,12 +1,14 @@
 package com.oa.common.datascope.aspect;
 
-import com.oa.common.datascope.annotation.DataScope;
+import java.util.ArrayList;
+import java.util.List;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 import com.oa.common.core.utils.StringUtils;
 import com.oa.common.core.web.domain.BaseEntity;
+import com.oa.common.datascope.annotation.DataScope;
 import com.oa.common.security.utils.SecurityUtils;
 import com.oa.system.api.domain.SysRole;
 import com.oa.system.api.domain.SysUser;
@@ -14,8 +16,8 @@ import com.oa.system.api.model.LoginUser;
 
 /**
  * 数据过滤处理
- * 
- * @author ruoyi
+ *
+ * @author dragon
  */
 @Aspect
 @Component
@@ -76,7 +78,7 @@ public class DataScopeAspect
 
     /**
      * 数据范围过滤
-     * 
+     *
      * @param joinPoint 切点
      * @param user 用户
      * @param deptAlias 部门别名
@@ -85,10 +87,15 @@ public class DataScopeAspect
     public static void dataScopeFilter(JoinPoint joinPoint, SysUser user, String deptAlias, String userAlias)
     {
         StringBuilder sqlString = new StringBuilder();
+        List<String> conditions = new ArrayList<String>();
 
         for (SysRole role : user.getRoles())
         {
             String dataScope = role.getDataScope();
+            if (conditions.contains(dataScope))
+            {
+                continue;
+            }
             if (DATA_SCOPE_ALL.equals(dataScope))
             {
                 sqlString = new StringBuilder();
@@ -119,9 +126,10 @@ public class DataScopeAspect
                 else
                 {
                     // 数据权限为仅本人且没有userAlias别名不查询任何数据
-                    sqlString.append(" OR 1=0 ");
+                    sqlString.append(StringUtils.format(" OR {}.dept_id = 0 ", deptAlias));
                 }
             }
+            conditions.add(dataScope);
         }
 
         if (StringUtils.isNotBlank(sqlString.toString()))

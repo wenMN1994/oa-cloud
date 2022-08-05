@@ -163,7 +163,7 @@
             <el-option
               v-for="item in listClassOptions"
               :key="item.value"
-              :label="item.label"
+              :label="item.label + '(' + item.value + ')'"
               :value="item.value"
             ></el-option>
           </el-select>
@@ -191,7 +191,7 @@
 
 <script>
 import { listData, getData, delData, addData, updateData } from "@/api/system/dict/data";
-import { optionSelect as getDictOptionSelect, getType } from "@/api/system/dict/type";
+import { optionselect as getDictOptionselect, getType } from "@/api/system/dict/type";
 
 export default {
   name: "Data",
@@ -287,7 +287,7 @@ export default {
     },
     /** 查询字典类型列表 */
     getTypeList() {
-      getDictOptionSelect().then(response => {
+      getDictOptionselect().then(response => {
         this.typeOptions = response.data;
       });
     },
