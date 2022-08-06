@@ -57,8 +57,7 @@ public class ScheduleUtils
     /**
      * 创建定时任务
      */
-    public static void createScheduleJob(Scheduler scheduler, SysJob job) throws SchedulerException, TaskException
-    {
+    public static void createScheduleJob(Scheduler scheduler, SysJob job) throws SchedulerException, TaskException {
         Class<? extends Job> jobClass = getQuartzJobClass(job);
         // 构建job信息
         Long jobId = job.getJobId();
@@ -77,17 +76,19 @@ public class ScheduleUtils
         jobDetail.getJobDataMap().put(ScheduleConstants.TASK_PROPERTIES, job);
 
         // 判断是否存在
-        if (scheduler.checkExists(getJobKey(jobId, jobGroup)))
-        {
+        if (scheduler.checkExists(getJobKey(jobId, jobGroup))) {
             // 防止创建时存在数据问题 先移除，然后在执行创建操作
             scheduler.deleteJob(getJobKey(jobId, jobGroup));
         }
 
-        scheduler.scheduleJob(jobDetail, trigger);
+        // 判断任务是否过期
+        if (StringUtils.isNotNull(CronUtils.getNextExecution(job.getCronExpression()))) {
+            // 执行调度任务
+            scheduler.scheduleJob(jobDetail, trigger);
+        }
 
         // 暂停任务
-        if (job.getStatus().equals(ScheduleConstants.Status.PAUSE.getValue()))
-        {
+        if (job.getStatus().equals(ScheduleConstants.Status.PAUSE.getValue())) {
             scheduler.pauseJob(ScheduleUtils.getJobKey(jobId, jobGroup));
         }
     }

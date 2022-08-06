@@ -1,7 +1,7 @@
 package com.oa.file.service.impl;
 
+import com.oa.common.core.utils.file.FileTypeUtils;
 import com.oa.file.service.ISysFileUploadService;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,11 +12,10 @@ import com.github.tobato.fastdfs.service.FastFileStorageClient;
 /**
  * FastDFS 文件存储
  * 
- * @author ruoyi
+ * @author dragon
  */
 @Service
-public class FastDfsSysFileServiceImpl implements ISysFileUploadService
-{
+public class FastDfsSysFileServiceImpl implements ISysFileUploadService {
     /**
      * 域名或本机访问地址
      */
@@ -34,10 +33,9 @@ public class FastDfsSysFileServiceImpl implements ISysFileUploadService
      * @throws Exception
      */
     @Override
-    public String uploadFile(MultipartFile file) throws Exception
-    {
+    public String uploadFile(MultipartFile file) throws Exception {
         StorePath storePath = storageClient.uploadFile(file.getInputStream(), file.getSize(),
-                FilenameUtils.getExtension(file.getOriginalFilename()), null);
+                FileTypeUtils.getExtension(file), null);
         return domain + "/" + storePath.getFullPath();
     }
 }

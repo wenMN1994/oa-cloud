@@ -2,8 +2,8 @@ package com.oa.common.core.constant;
 
 /**
  * 通用常量信息
- * 
- * @author ruoyi
+ *
+ * @author dragon
  */
 public class Constants
 {
@@ -103,25 +103,9 @@ public class Constants
     public static final String IS_ASC = "isAsc";
 
     /**
-     * 验证码 redis key
-     */
-    public static final String CAPTCHA_CODE_KEY = "captcha_codes:";
-
-    /**
      * 验证码有效期（分钟）
      */
     public static final long CAPTCHA_EXPIRATION = 2;
-
-
-    /**
-     * 参数管理 cache key
-     */
-    public static final String SYS_CONFIG_KEY = "sys_config:";
-
-    /**
-     * 字典管理 cache key
-     */
-    public static final String SYS_DICT_KEY = "sys_dict:";
 
     /**
      * 资源映射路径 前缀

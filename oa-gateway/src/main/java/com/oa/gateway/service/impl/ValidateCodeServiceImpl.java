@@ -5,25 +5,25 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
-
-import com.oa.gateway.config.properties.CaptchaProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FastByteArrayOutputStream;
 import com.google.code.kaptcha.Producer;
+import com.oa.common.core.constant.CacheConstants;
 import com.oa.common.core.constant.Constants;
 import com.oa.common.core.exception.CaptchaException;
-import com.oa.common.core.utils.uuid.IdUtils;
 import com.oa.common.core.utils.StringUtils;
 import com.oa.common.core.utils.sign.Base64;
+import com.oa.common.core.utils.uuid.IdUtils;
 import com.oa.common.core.web.domain.AjaxResult;
 import com.oa.common.redis.service.RedisService;
+import com.oa.gateway.config.properties.CaptchaProperties;
 import com.oa.gateway.service.ValidateCodeService;
 
 /**
  * 验证码实现处理
  *
- * @author ruoyi
+ * @author dragon
  */
 @Service
 public class ValidateCodeServiceImpl implements ValidateCodeService
@@ -56,7 +56,7 @@ public class ValidateCodeServiceImpl implements ValidateCodeService
 
         // 保存验证码信息
         String uuid = IdUtils.simpleUUID();
-        String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;
+        String verifyKey = CacheConstants.CAPTCHA_CODE_KEY + uuid;
 
         String capStr = null, code = null;
         BufferedImage image = null;
@@ -107,7 +107,7 @@ public class ValidateCodeServiceImpl implements ValidateCodeService
         {
             throw new CaptchaException("验证码已失效");
         }
-        String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;
+        String verifyKey = CacheConstants.CAPTCHA_CODE_KEY + uuid;
         String captcha = redisService.getCacheObject(verifyKey);
         redisService.deleteObject(verifyKey);
 

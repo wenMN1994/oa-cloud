@@ -166,10 +166,9 @@ public class SysJobController extends BaseController
     @RequiresPermissions("monitor:job:changeStatus")
     @Log(title = "定时任务", businessType = BusinessType.UPDATE)
     @PutMapping("/run")
-    public AjaxResult run(@RequestBody SysJob job) throws SchedulerException
-    {
-        jobService.run(job);
-        return AjaxResult.success();
+    public AjaxResult run(@RequestBody SysJob job) throws SchedulerException {
+        boolean result = jobService.run(job);
+        return result ? success() : error("任务不存在或已过期！");
     }
 
     /**
