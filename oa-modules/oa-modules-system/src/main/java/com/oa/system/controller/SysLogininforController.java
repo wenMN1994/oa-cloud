@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.oa.common.core.constant.CacheConstants;
 import com.oa.common.core.utils.poi.ExcelUtil;
 import com.oa.common.core.web.controller.BaseController;
 import com.oa.common.core.web.domain.AjaxResult;
 import com.oa.common.core.web.page.TableDataInfo;
 import com.oa.common.log.annotation.Log;
 import com.oa.common.log.enums.BusinessType;
+import com.oa.common.redis.service.RedisService;
 import com.oa.common.security.annotation.InnerAuth;
 import com.oa.common.security.annotation.RequiresPermissions;
 import com.oa.system.api.domain.SysLogininfor;
@@ -23,8 +25,8 @@ import com.oa.system.service.ISysLogininforService;
 
 /**
  * 系统访问记录
- * 
- * @author ruoyi
+ *
+ * @author dragon
  */
 @RestController
 @RequestMapping("/logininfor")
@@ -32,6 +34,9 @@ public class SysLogininforController extends BaseController
 {
     @Autowired
     private ISysLogininforService logininforService;
+
+    @Autowired
+    private RedisService redisService;
 
     @RequiresPermissions("system:logininfor:list")
     @GetMapping("/list")
@@ -67,6 +72,15 @@ public class SysLogininforController extends BaseController
     {
         logininforService.cleanLogininfor();
         return AjaxResult.success();
+    }
+
+    @RequiresPermissions("system:logininfor:unlock")
+    @Log(title = "账户解锁", businessType = BusinessType.OTHER)
+    @GetMapping("/unlock/{userName}")
+    public AjaxResult unlock(@PathVariable("userName") String userName)
+    {
+        redisService.deleteObject(CacheConstants.PWD_ERR_CNT_KEY + userName);
+        return success();
     }
 
     @InnerAuth
