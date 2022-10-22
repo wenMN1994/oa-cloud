@@ -12,10 +12,12 @@
         <module>oa-common-log</module>
         <module>oa-common-core</module>
         <module>oa-common-redis</module>
+        <module>oa-common-seate</module>
         <module>oa-common-swagger</module>
         <module>oa-common-security</module>
         <module>oa-common-datascope</module>
 		<module>oa-common-datasource</module>
+        <module>oa-common-seata</module>
     </modules>
 
     <artifactId>oa-common</artifactId>

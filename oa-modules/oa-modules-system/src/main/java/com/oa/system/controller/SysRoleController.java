@@ -2,6 +2,9 @@ package com.oa.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.oa.system.api.domain.SysDept;
+import com.oa.system.service.ISysDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,6 +44,9 @@ public class SysRoleController extends BaseController
 
     @Autowired
     private ISysUserService userService;
+
+    @Autowired
+    private ISysDeptService deptService;
 
     @RequiresPermissions("system:role:list")
     @GetMapping("/list")
@@ -218,5 +224,18 @@ public class SysRoleController extends BaseController
     {
         roleService.checkRoleDataScope(roleId);
         return toAjax(roleService.insertAuthUsers(roleId, userIds));
+    }
+
+    /**
+     * 获取对应角色部门树列表
+     */
+    @RequiresPermissions("system:role:query")
+    @GetMapping(value = "/deptTree/{roleId}")
+    public AjaxResult deptTree(@PathVariable("roleId") Long roleId)
+    {
+        AjaxResult ajax = AjaxResult.success();
+        ajax.put("checkedKeys", deptService.selectDeptListByRoleId(roleId));
+        ajax.put("depts", deptService.selectDeptTreeList(new SysDept()));
+        return ajax;
     }
 }

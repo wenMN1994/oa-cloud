@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.oa.common.core.constant.HttpStatus;
 import com.oa.system.api.RemoteFileService;
+import com.oa.system.api.domain.SysDept;
 import com.oa.system.api.domain.SysFileVo;
+import com.oa.system.service.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -37,11 +39,6 @@ import com.oa.common.security.utils.SecurityUtils;
 import com.oa.system.api.domain.SysRole;
 import com.oa.system.api.domain.SysUser;
 import com.oa.system.api.model.LoginUser;
-import com.oa.system.service.ISysConfigService;
-import com.oa.system.service.ISysPermissionService;
-import com.oa.system.service.ISysPostService;
-import com.oa.system.service.ISysRoleService;
-import com.oa.system.service.ISysUserService;
 
 /**
  * 用户信息
@@ -56,6 +53,9 @@ public class SysUserController extends BaseController {
 
     @Autowired
     private ISysRoleService roleService;
+
+    @Autowired
+    private ISysDeptService deptService;
 
     @Autowired
     private ISysPostService postService;
@@ -126,9 +126,9 @@ public class SysUserController extends BaseController {
         }
 
         // 角色集合
-        Set<String> roles = permissionService.getRolePermission(sysUser.getUserId());
+        Set<String> roles = permissionService.getRolePermission(sysUser);
         // 权限集合
-        Set<String> permissions = permissionService.getMenuPermission(sysUser.getUserId());
+        Set<String> permissions = permissionService.getMenuPermission(sysUser);
         LoginUser sysUserVo = new LoginUser();
         sysUserVo.setSysUser(sysUser);
         sysUserVo.setRoles(roles);
@@ -146,7 +146,7 @@ public class SysUserController extends BaseController {
         if (!("true".equals(configService.selectConfigByKey("sys.account.registerUser")))) {
             return R.fail("当前系统没有开启注册功能！");
         }
-        if (UserConstants.NOT_UNIQUE.equals(userService.checkUserNameUnique(username))) {
+        if (UserConstants.NOT_UNIQUE.equals(userService.checkUserNameUnique(sysUser))) {
             return R.fail("保存用户'" + username + "'失败，注册账号已存在");
         }
         return R.ok(userService.registerUser(sysUser));
@@ -158,14 +158,15 @@ public class SysUserController extends BaseController {
      * @return 用户信息
      */
     @GetMapping("getInfo")
-    public AjaxResult getInfo() {
-        Long userId = SecurityUtils.getUserId();
+    public AjaxResult getInfo()
+    {
+        SysUser user = userService.selectUserById(SecurityUtils.getUserId());
         // 角色集合
-        Set<String> roles = permissionService.getRolePermission(userId);
+        Set<String> roles = permissionService.getRolePermission(user);
         // 权限集合
-        Set<String> permissions = permissionService.getMenuPermission(userId);
+        Set<String> permissions = permissionService.getMenuPermission(user);
         AjaxResult ajax = AjaxResult.success();
-        ajax.put("user", userService.selectUserById(userId));
+        ajax.put("user", user);
         ajax.put("roles", roles);
         ajax.put("permissions", permissions);
         return ajax;
@@ -198,7 +199,7 @@ public class SysUserController extends BaseController {
     @Log(title = "用户管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@Validated @RequestBody SysUser user) {
-        if (UserConstants.NOT_UNIQUE.equals(userService.checkUserNameUnique(user.getUserName()))) {
+        if (UserConstants.NOT_UNIQUE.equals(userService.checkUserNameUnique(user))) {
             return AjaxResult.error("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
         } else if (StringUtils.isNotEmpty(user.getPhonenumber())
                 && UserConstants.NOT_UNIQUE.equals(userService.checkPhoneUnique(user))) {
@@ -221,7 +222,9 @@ public class SysUserController extends BaseController {
     public AjaxResult edit(@Validated @RequestBody SysUser user) {
         userService.checkUserAllowed(user);
         userService.checkUserDataScope(user.getUserId());
-        if (StringUtils.isNotEmpty(user.getPhonenumber())
+        if (UserConstants.NOT_UNIQUE.equals(userService.checkUserNameUnique(user))) {
+            return AjaxResult.error("修改用户'" + user.getUserName() + "'失败，登录账号已存在");
+        } else if (StringUtils.isNotEmpty(user.getPhonenumber())
                 && UserConstants.NOT_UNIQUE.equals(userService.checkPhoneUnique(user))) {
             return AjaxResult.error("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
         } else if (StringUtils.isNotEmpty(user.getEmail())
@@ -296,5 +299,15 @@ public class SysUserController extends BaseController {
         userService.checkUserDataScope(userId);
         userService.insertUserAuth(userId, roleIds);
         return success();
+    }
+
+    /**
+     * 获取部门树列表
+     */
+    @RequiresPermissions("system:user:list")
+    @GetMapping("/deptTree")
+    public AjaxResult deptTree(SysDept dept)
+    {
+        return AjaxResult.success(deptService.selectDeptTreeList(dept));
     }
 }

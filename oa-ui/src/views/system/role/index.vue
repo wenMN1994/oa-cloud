@@ -254,9 +254,8 @@
 </template>
 
 <script>
-import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleStatus } from "@/api/system/role";
+import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleStatus, deptTreeSelect } from "@/api/system/role";
 import { treeselect as menuTreeselect, roleMenuTreeselect } from "@/api/system/menu";
-import { treeselect as deptTreeselect, roleDeptTreeselect } from "@/api/system/dept";
 
 export default {
   name: "Role",
@@ -364,12 +363,6 @@ export default {
         this.menuOptions = response.data;
       });
     },
-    /** 查询部门树结构 */
-    getDeptTreeselect() {
-      deptTreeselect().then(response => {
-        this.deptOptions = response.data;
-      });
-    },
     // 所有菜单节点数据
     getMenuAllCheckedKeys() {
       // 目前被选中的菜单节点
@@ -396,8 +389,8 @@ export default {
       });
     },
     /** 根据角色ID查询部门树结构 */
-    getRoleDeptTreeselect(roleId) {
-      return roleDeptTreeselect(roleId).then(response => {
+    getDeptTree(roleId) {
+      return deptTreeSelect(roleId).then(response => {
         this.deptOptions = response.depts;
         return response;
       });
@@ -464,17 +457,19 @@ export default {
       this.multiple = !selection.length
     },
     // 更多操作触发
-    handleCommand(command, row) {
-      switch (command) {
-        case "handleDataScope":
-          this.handleDataScope(row);
-          break;
-        case "handleAuthUser":
-          this.handleAuthUser(row);
-          break;
-        default:
-          break;
-      }
+    handleDataScope(row) {
+      this.reset();
+      const deptTreeSelect = this.getDeptTree(row.roleId);
+      getRole(row.roleId).then(response => {
+        this.form = response.data;
+        this.openDataScope = true;
+        this.$nextTick(() => {
+          deptTreeSelect.then(res => {
+            this.$refs.dept.setCheckedKeys(res.checkedKeys);
+          });
+        });
+        this.title = "分配数据权限";
+      });
     },
     // 树权限（展开/折叠）
     handleCheckedTreeExpand(value, type) {

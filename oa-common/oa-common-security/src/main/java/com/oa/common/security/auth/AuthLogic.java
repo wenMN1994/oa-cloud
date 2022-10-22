@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.oa.common.core.context.SecurityContextHolder;
 import com.oa.common.security.annotation.Logical;
 import com.oa.common.security.annotation.RequiresLogin;
 import com.oa.common.security.annotation.RequiresPermissions;
@@ -135,6 +136,7 @@ public class AuthLogic
      */
     public void checkPermi(RequiresPermissions requiresPermissions)
     {
+        SecurityContextHolder.setPermission(StringUtils.join(requiresPermissions.value(), ","));
         if (requiresPermissions.logical() == Logical.AND)
         {
             checkPermiAnd(requiresPermissions.value());
