@@ -1,6 +1,5 @@
 package com.oa.system.controller;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -37,8 +36,7 @@ import com.oa.system.service.ISysUserService;
  */
 @RestController
 @RequestMapping("/user/profile")
-public class SysProfileController extends BaseController
-{
+public class SysProfileController extends BaseController {
     @Autowired
     private ISysUserService userService;
     
@@ -52,8 +50,7 @@ public class SysProfileController extends BaseController
      * 个人信息
      */
     @GetMapping
-    public AjaxResult profile()
-    {
+    public AjaxResult profile() {
         String username = SecurityUtils.getUsername();
         SysUser user = userService.selectUserByUserName(username);
         AjaxResult ajax = AjaxResult.success(user);
@@ -67,36 +64,31 @@ public class SysProfileController extends BaseController
      */
     @Log(title = "个人信息", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult updateProfile(@RequestBody SysUser user)
-    {
+    public AjaxResult updateProfile(@RequestBody SysUser user) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         SysUser sysUser = loginUser.getSysUser();
         user.setUserName(sysUser.getUserName());
         if (StringUtils.isNotEmpty(user.getPhonenumber())
-                && UserConstants.NOT_UNIQUE.equals(userService.checkPhoneUnique(user)))
-        {
-            return AjaxResult.error("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
-        }
-        else if (StringUtils.isNotEmpty(user.getEmail())
-                && UserConstants.NOT_UNIQUE.equals(userService.checkEmailUnique(user)))
-        {
-            return AjaxResult.error("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
+                && UserConstants.NOT_UNIQUE.equals(userService.checkPhoneUnique(user))) {
+            return error("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
+        } else if (StringUtils.isNotEmpty(user.getEmail())
+                && UserConstants.NOT_UNIQUE.equals(userService.checkEmailUnique(user))) {
+            return error("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
         }
         user.setUserId(sysUser.getUserId());
         user.setPassword(null);
         user.setAvatar(null);
         user.setDeptId(null);
-        if (userService.updateUserProfile(user) > 0)
-        {
+        if (userService.updateUserProfile(user) > 0) {
             // 更新缓存用户信息
             loginUser.getSysUser().setNickName(user.getNickName());
             loginUser.getSysUser().setPhonenumber(user.getPhonenumber());
             loginUser.getSysUser().setEmail(user.getEmail());
             loginUser.getSysUser().setSex(user.getSex());
             tokenService.setLoginUser(loginUser);
-            return AjaxResult.success();
+            return success();
         }
-        return AjaxResult.error("修改个人信息异常，请联系管理员");
+        return error("修改个人信息异常，请联系管理员");
     }
 
     /**
@@ -109,19 +101,19 @@ public class SysProfileController extends BaseController
         SysUser user = userService.selectUserByUserName(username);
         String password = user.getPassword();
         if (!SecurityUtils.matchesPassword(oldPassword, password)) {
-            return AjaxResult.error("修改密码失败，旧密码错误");
+            return error("修改密码失败，旧密码错误");
         }
         if (SecurityUtils.matchesPassword(newPassword, password)) {
-            return AjaxResult.error("新密码不能与旧密码相同");
+            return error("新密码不能与旧密码相同");
         }
         if (userService.resetUserPwd(username, SecurityUtils.encryptPassword(newPassword)) > 0) {
             // 更新缓存用户密码
             LoginUser loginUser = SecurityUtils.getLoginUser();
             loginUser.getSysUser().setPassword(SecurityUtils.encryptPassword(newPassword));
             tokenService.setLoginUser(loginUser);
-            return AjaxResult.success();
+            return success();
         }
-        return AjaxResult.error("修改密码异常，请联系管理员");
+        return error("修改密码异常，请联系管理员");
     }
     
     /**
@@ -134,11 +126,11 @@ public class SysProfileController extends BaseController
             LoginUser loginUser = SecurityUtils.getLoginUser();
             String extension = FileTypeUtils.getExtension(file);
             if (!StringUtils.equalsAnyIgnoreCase(extension, MimeTypeUtils.IMAGE_EXTENSION)) {
-                return AjaxResult.error("文件格式不正确，请上传" + Arrays.toString(MimeTypeUtils.IMAGE_EXTENSION) + "格式");
+                return error("文件格式不正确，请上传" + Arrays.toString(MimeTypeUtils.IMAGE_EXTENSION) + "格式");
             }
             R<SysFileVo> fileResult = remoteFileService.upload(file, "avatar");
             if(Objects.equals(R.FAIL, fileResult.getCode())){
-                return AjaxResult.error("文件服务异常，请联系管理员");
+                return error("文件服务异常，请联系管理员");
             }
             String url = fileResult.getData().getUrl();
             Long fileId = fileResult.getData().getId();
@@ -151,6 +143,6 @@ public class SysProfileController extends BaseController
                 return ajax;
             }
         }
-        return AjaxResult.error("上传图片异常，请联系管理员");
+        return error("上传图片异常，请联系管理员");
     }
 }
