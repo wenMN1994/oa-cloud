@@ -39,7 +39,6 @@
       }
     },
     mounted() {
-      this.insertToBody()
       this.addEventClick()
     },
     beforeDestroy() {
@@ -56,11 +55,6 @@
           this.show = false
           window.removeEventListener('click', this.closeSidebar)
         }
-      },
-      insertToBody() {
-        const elx = this.$refs.rightPanel
-        const body = document.querySelector('body')
-        body.insertBefore(elx, body.firstChild)
       }
     }
   }
